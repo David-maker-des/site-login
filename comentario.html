@@ -3,52 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
     <title>Página de Comentários</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+        }
+        .comment-form {
+            margin-bottom: 20px;
+        }
+        .comment {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .comment h4 {
+            margin: 0;
+        }
+        .comment p {
+            margin: 5px 0 0;
+        }
+    </style>
 </head>
 <body>
+
     <h1>Comentários</h1>
-    <form id="commentForm">
-        <label for="name">Nome:</label>
-        <input type="text" id="name" name="name" required>
 
-        <label for="comment">Comentário:</label>
-        <textarea id="comment" name="comment" required></textarea>
+    <div class="comment-form">
+        <input type="text" id="name" placeholder="Seu nome" required>
+        <textarea id="comment" placeholder="Seu comentário" required></textarea>
+        <button onclick="addComment()">Enviar</button>
+    </div>
 
-        <button type="submit">Enviar Comentário</button>
-    </form>
-
-    <h2>Comentários Anteriores:</h2>
-    <div id="commentsList"></div>
+    <div id="comments-section">
+        <!-- Comentários aparecerão aqui -->
+    </div>
 
     <script>
-        // Função para carregar comentários do localStorage
-        function loadComments() {
-            const comments = JSON.parse(localStorage.getItem('comments')) || [];
-            const commentsList = document.getElementById('commentsList');
-            commentsList.innerHTML = '';
-
-            comments.forEach((comment) => {
-                const commentDiv = document.createElement('div');
-                commentDiv.classList.add('comment');
-                commentDiv.innerHTML = `<strong>${comment.name}</strong>: ${comment.comment}`;
-                commentsList.appendChild(commentDiv);
-            });
-        }
-
-        // Função para adicionar um novo comentário
-        document.getElementById('commentForm').addEventListener('submit', function(event) {
-            event.preventDefault();
+        // Função para adicionar um comentário
+        function addComment() {
             const name = document.getElementById('name').value;
             const comment = document.getElementById('comment').value;
 
-            const comments = JSON.parse(localStorage.getItem('comments')) || [];
-            comments.push({ name, comment });
-            localStorage.setItem('comments', JSON.stringify(comments));
+            if (name && comment) {
+                const comments = JSON.parse(localStorage.getItem('comments')) || [];
 
-            document.getElementById('commentForm').reset();
-            loadComments();
-        });
+                // Adiciona o novo comentário ao array
+                comments.push({ name, comment });
+
+                // Salva os comentários atualizados no localStorage
+                localStorage.setItem('comments', JSON.stringify(comments));
+
+                // Limpa os campos após enviar
+                document.getElementById('name').value = '';
+                document.getElementById('comment').value = '';
+
+                // Atualiza a seção de comentários
+                displayComments();
+            } else {
+                alert('Por favor, preencha todos os campos.');
+            }
+        }
+
+        // Função para exibir comentários
+        function displayComments() {
+            const commentsSection = document.getElementById('comments-section');
+            commentsSection.innerHTML = ''; // Limpa a seção antes de exibir
+
+            const comments = JSON.parse(localStorage.getItem('comments')) || [];
+
+            comments.forEach(({ name, comment }) => {
+                const commentDiv = document.createElement('div');
+                commentDiv.classList.add('comment');
+
+                const commentHeader = document.createElement('h4');
+                commentHeader.textContent = name;
+
+                const commentText = document.createElement('p');
+                commentText.textContent = comment;
+
+                commentDiv.appendChild(commentHeader);
+                commentDiv.appendChild(commentText);
+                commentsSection.appendChild(commentDiv);
+            });
+        }
+
+        // Carrega os comentários ao iniciar a página
+        window.onload = displayComments;
+    </script>
+
+</body>
+</html>
 
         // Carregar comentários ao iniciar a página
         loadComments();
