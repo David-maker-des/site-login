@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Página de Comentários</title>
+</head>
+<body>
+    <h1>Comentários</h1>
+    <form id="commentForm">
+        <label for="name">Nome:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="comment">Comentário:</label>
+        <textarea id="comment" name="comment" required></textarea>
+
+        <button type="submit">Enviar Comentário</button>
+    </form>
+
+    <h2>Comentários Anteriores:</h2>
+    <div id="commentsList"></div>
+
+    <script>
+        // Função para carregar comentários do localStorage
+        function loadComments() {
+            const comments = JSON.parse(localStorage.getItem('comments')) || [];
+            const commentsList = document.getElementById('commentsList');
+            commentsList.innerHTML = '';
+
+            comments.forEach((comment) => {
+                const commentDiv = document.createElement('div');
+                commentDiv.classList.add('comment');
+                commentDiv.innerHTML = `<strong>${comment.name}</strong>: ${comment.comment}`;
+                commentsList.appendChild(commentDiv);
+            });
+        }
+
+        // Função para adicionar um novo comentário
+        document.getElementById('commentForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const comment = document.getElementById('comment').value;
+
+            const comments = JSON.parse(localStorage.getItem('comments')) || [];
+            comments.push({ name, comment });
+            localStorage.setItem('comments', JSON.stringify(comments));
+
+            document.getElementById('commentForm').reset();
+            loadComments();
+        });
+
+        // Carregar comentários ao iniciar a página
+        loadComments();
+    </script>
+    <button><a href="index2.html">Voltar</a></button>
+</body>
+</html>

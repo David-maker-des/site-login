@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro e Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .usuario {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Cadastro de Usuários</h1>
+    <div>
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" required>
+    </div>
+    <div>
+        <label for="senha">Senha:</label>
+        <input type="password" id="senha" required>
+    </div>
+    <button id="cadastrar">Cadastrar</button>
+
+    <h2>Login</h2>
+    <div>
+        <label for="loginNome">Nome:</label>
+        <input type="text" id="loginNome" required>
+    </div>
+    <div>
+        <label for="loginSenha">Senha:</label>
+        <input type="password" id="loginSenha" required>
+    </div>
+    <button id="login">Login</button>
+
+    <div id="mensagem"></div>
+
+    <script>
+        document.getElementById('cadastrar').addEventListener('click', function() {
+            const nome = document.getElementById('nome').value;
+            const senha = document.getElementById('senha').value;
+
+            if (!nome || !senha) {
+                alert("Por favor, preencha todos os campos.");
+                return;
+            }
+
+            // Armazena o usuário no localStorage
+            localStorage.setItem(nome, senha);
+
+            // Limpa os campos de entrada
+            document.getElementById('nome').value = '';
+            document.getElementById('senha').value = '';
+
+            alert("Usuário cadastrado com sucesso!");
+        });
+
+        document.getElementById('login').addEventListener('click', function() {
+            const loginNome = document.getElementById('loginNome').value;
+            const loginSenha = document.getElementById('loginSenha').value;
+
+            const senhaArmazenada = localStorage.getItem(loginNome);
+
+            if (senhaArmazenada === null) {
+                document.getElementById('mensagem').textContent = "Usuário não encontrado.";
+            } else if (senhaArmazenada === loginSenha) {
+                document.getElementById('mensagem').textContent = "Login bem-sucedido!";
+                window.location.href = "index2.html";
+            } else {
+                document.getElementById('mensagem').textContent = "Senha incorreta.";
+            }
+        });
+    </script>
+
+</body>
+</html>
