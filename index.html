@@ -50,6 +50,12 @@
                 return;
             }
 
+            // Verifica se o nome já está cadastrado
+            if (localStorage.getItem(nome) !== null) {
+                alert("Nome de usuário já cadastrado. Por favor, escolha outro nome.");
+                return;
+            }
+
             // Armazena o usuário no localStorage
             localStorage.setItem(nome, senha);
 
@@ -70,7 +76,7 @@
                 document.getElementById('mensagem').textContent = "Usuário não encontrado.";
             } else if (senhaArmazenada === loginSenha) {
                 document.getElementById('mensagem').textContent = "Login bem-sucedido!";
-                window.location.href = "index2.html";
+                window.location.href = "index2.html"; // Redireciona para outra página
             } else {
                 document.getElementById('mensagem').textContent = "Senha incorreta.";
             }
