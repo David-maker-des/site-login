@@ -31,6 +31,8 @@
             margin: 5px 0 0;
         }
     </style>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js"></script>
 </head>
 <body>
 
@@ -47,26 +49,36 @@
     </div>
 
     <script>
+        // Configurações do Firebase
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            databaseURL: "YOUR_DATABASE_URL",
+            projectId: "YOUR_PROJECT_ID",
+        };
+
+        // Inicializa o Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
         // Função para adicionar um comentário
         function addComment() {
             const name = document.getElementById('name').value;
             const comment = document.getElementById('comment').value;
 
             if (name && comment) {
-                const comments = JSON.parse(localStorage.getItem('comments')) || [];
+                const commentData = {
+                    name: name,
+                    comment: comment,
+                    timestamp: Date.now()
+                };
 
-                // Adiciona o novo comentário ao array
-                comments.push({ name, comment });
-
-                // Salva os comentários atualizados no localStorage
-                localStorage.setItem('comments', JSON.stringify(comments));
+                // Adiciona o comentário ao banco de dados
+                database.ref('comments').push(commentData);
 
                 // Limpa os campos após enviar
                 document.getElementById('name').value = '';
                 document.getElementById('comment').value = '';
-
-                // Atualiza a seção de comentários
-                displayComments();
             } else {
                 alert('Por favor, preencha todos os campos.');
             }
@@ -77,34 +89,9 @@
             const commentsSection = document.getElementById('comments-section');
             commentsSection.innerHTML = ''; // Limpa a seção antes de exibir
 
-            const comments = JSON.parse(localStorage.getItem('comments')) || [];
-
-            comments.forEach(({ name, comment }) => {
-                const commentDiv = document.createElement('div');
-                commentDiv.classList.add('comment');
-
-                const commentHeader = document.createElement('h4');
-                commentHeader.textContent = name;
-
-                const commentText = document.createElement('p');
-                commentText.textContent = comment;
-
-                commentDiv.appendChild(commentHeader);
-                commentDiv.appendChild(commentText);
-                commentsSection.appendChild(commentDiv);
-            });
-        }
-
-        // Carrega os comentários ao iniciar a página
-        window.onload = displayComments;
-    </script>
-
-</body>
-</html>
-
-        // Carregar comentários ao iniciar a página
-        loadComments();
-    </script>
-    <button><a href="index2.html">Voltar</a></button>
-</body>
-</html>
+            // Recupera os comentários do banco de dados
+            database.ref('comments').on('value', (snapshot) => {
+                const comments = snapshot.val();
+                if (comments) {
+                    Object.keys(comments).forEach((key) => {
+                        const { name, comment
